@@ -14,7 +14,8 @@ onMounted(() => {
 //  });
 
 
-
+const name = props.base.name;
+const id = props.base.id;
 
 
 // const handleEvent = (eventData) => {
@@ -25,7 +26,8 @@ onMounted(() => {
 </script>
 
 <template>
-<p>{{ props.base.name }}</p>
+<p>{{ name }}</p>
+<p>{{ id }}</p>
 </template>
 
 <style></style>

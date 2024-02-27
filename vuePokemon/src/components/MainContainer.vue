@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, } from 'vue';
+import { ref, onMounted } from 'vue';
 import CardPokemon from './CardPokemon.vue';
 import ButtonNext from './ButtonNext.vue';
 
@@ -10,19 +10,13 @@ import ButtonNext from './ButtonNext.vue';
     
 // }
 
-
-onMounted(() => {
-    getPokemons();
-});
-
-
-
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const LIMIT_POKEMON = 12;
-const base = reactive([]);
+let base = ref([]);
 let offsetPok = 0;
 
-async function getPokemons() {
+const getPokemons = async () => {
+    let innerBase = []
     const response = await fetch(
         `${BASE_URL}pokemon/?limit=${LIMIT_POKEMON}&offset=${offsetPok}`
     );
@@ -35,29 +29,31 @@ async function getPokemons() {
             const pokemonTypes = pokemonData.types.map((item) => {
                 return item.type.name
             })
-            base.push({ ...pokemonData, pokemonTypes: pokemonTypes });
+            innerBase.push({ ...pokemonData, pokemonTypes: pokemonTypes });
         })
 
     );
-    base.sort((a, b) => {
+    innerBase.sort((a, b) => {
         return a.id - b.id;
-
     });
+
+    return innerBase;
     // console.log(base)
 }
+
+onMounted(() => {
+    getPokemons().then(res => {
+        base.value = res;
+    });
+});
 
 const getPokemon = async (pokemonUrl) => {
     const response = await fetch(pokemonUrl);
     const pokemonData = await response.json();
     return pokemonData;
 };
-
-
-
-
-
-
 </script>
+
 <template>
     <!-- <div class="mainContainer">
         <div class="groupCardPoc">
@@ -69,7 +65,6 @@ const getPokemon = async (pokemonUrl) => {
         <div  class="pokemonCards">
             <!-- <pokemonCard :pokemonData="card"/> -->
         </div>
-        <p></p>
         <CardPokemon :base="base[1]" v-if="base.length" />
         <ButtonNext @click="Hendler()" />
     </div>
