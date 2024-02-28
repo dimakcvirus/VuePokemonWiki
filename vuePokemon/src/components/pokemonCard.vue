@@ -1,22 +1,25 @@
 <script setup>
 import { defineProps } from 'vue';
 import GenerateId from './GenerateId.vue'
+import TypePokemon from './TypePokemon.vue';
+import NameUpperCase from './NameUpperCase.vue';
 defineProps({
-    img:Image,
+    img:String,
     id:Number,
-    name:String
+    name:String,
+    types:Object
 })
-
 
 </script>
 
 <template>
-    <div>
-        <!-- <img src="" alt=""> -->
-       <GenerateId :id="id"/>
-        <validIdd id="fo"></validIdd>
-        <validName></validName>
-        <pokemonTypes></pokemonTypes>
+    <div class="cardPok">
+        <a><img :src= img></a>
+        <div class="informElements">
+            <GenerateId :id="id"/>
+            <NameUpperCase :name="name"/>
+            <TypePokemon :types="types"/>
+        </div>
     </div>
 </template>
 

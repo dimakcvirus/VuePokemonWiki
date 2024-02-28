@@ -1,24 +1,19 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import CardPokemon from './CardPokemon.vue';
-import ButtonNext from './ButtonNext.vue';
-
-
-// под вопросом
-// const Hendler = () => {
-//     offsetPok += 12
-    
-// }
+import CardPokemons from './CardPokemons.vue';
+import Button from './Button.vue';
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const LIMIT_POKEMON = 12;
-let base = ref([]);
-let offsetPok = 0;
+let pokemonList = ref([]);
+let offsetPok = ref(0);
+
+console.log(offsetPok) 
 
 const getPokemons = async () => {
     let innerBase = []
     const response = await fetch(
-        `${BASE_URL}pokemon/?limit=${LIMIT_POKEMON}&offset=${offsetPok}`
+        `${BASE_URL}pokemon/?limit=${LIMIT_POKEMON}&offset=${offsetPok.value}`
     );
     const data = await response.json();
     const parametersPokemons = data.results;
@@ -38,13 +33,19 @@ const getPokemons = async () => {
     });
 
     return innerBase;
-    // console.log(base)
+    
 }
 
-onMounted(() => {
-    getPokemons().then(res => {
-        base.value = res;
-    });
+// onMounted(() => {
+//     getPokemons().then(res => {
+//         base.value = res;
+//     });
+// });
+
+onMounted(async () => {
+    const innerBase = await getPokemons();
+    console.log(innerBase)
+    pokemonList.value.push(...innerBase)
 });
 
 const getPokemon = async (pokemonUrl) => {
@@ -52,21 +53,21 @@ const getPokemon = async (pokemonUrl) => {
     const pokemonData = await response.json();
     return pokemonData;
 };
+
+
+const  Hendler = async () => {
+    const number = 12;
+    offsetPok.value += number;
+    const innerBase = await getPokemons(offsetPok.value);
+    pokemonList.value.push(...innerBase);
+}
 </script>
 
 <template>
-    <!-- <div class="mainContainer">
-        <div class="groupCardPoc">
-            <CardPokemon :offsetPok="offsetPok"/>
-        </div>
-        <ButtonNext @click="Hendler()" />
-    </div> -->
+
      <div class="mainContainer">
-        <div  class="pokemonCards">
-            <!-- <pokemonCard :pokemonData="card"/> -->
-        </div>
-        <CardPokemon :base="base[1]" v-if="base.length" />
-        <ButtonNext @click="Hendler()" />
+        <CardPokemons :pokemonList="pokemonList" v-if="pokemonList.length" />
+        <Button @click="Hendler()" />
     </div>
 </template>
 
