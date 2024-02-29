@@ -2,26 +2,20 @@
 
 defineProps(
     {
-        types: Array,
-        species: Object
+        types: Object,
+      
     }
 )
-
-// const props = defineProps({
-
-//     types: Array,
-//     species: Object
-// })
-// console.log(props.species)
-
 </script>
 
 
 <template  >
+
     <div class=" typePok">
         <span :class="'pokemonType ' + type" v-for="(type, index) in types">{{ type }}</span>
         <!-- <span> {{ species }}</span> -->
     </div>
+    
 </template>
 
 <style>
