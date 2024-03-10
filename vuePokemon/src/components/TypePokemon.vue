@@ -1,8 +1,10 @@
 <script setup>
 
-defineProps(
+ const props = defineProps(
     {
-        types: Object,
+        types: { type: Array, default: () => [] }
+
+
       
     }
 )
@@ -11,9 +13,9 @@ defineProps(
 
 <template  >
 
-    <div class=" typePok">
-        <span :class="'pokemonType ' + type" v-for="(type, index) in types">{{ type }}</span>
-        <!-- <span> {{ species }}</span> -->
+    <div v-if="props.types.length" class=" typePok">
+        <span :class="'pokemonType ' + type" v-for="(type, index) in props.types">{{ type }}</span>
+      
     </div>
     
 </template>

@@ -1,23 +1,29 @@
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, computed } from 'vue';
 
 const props = defineProps({
     name:String
 }
 
 )
-const name = props.name
+// const name = props.name
 
-function ucFirst(name) {
-  if (!name) return name;
-  return name[0].toUpperCase() + name.slice(1);
-}
+// function ucFirst(name) {
+//   if (!name) return name;
+//   return name[0].toUpperCase() + name.slice(1);
+// }
 
-const names = ucFirst(name)
+// const names = ucFirst(name)
+
+
+//computed часто используется для вычисления значений для отображения в шаблоне
+const computedName = computed(() => {
+    return props.name[0].toUpperCase() + props.name.slice(1)
+}) 
 </script>
 
 <template>
-    <h2 class="namePokemon">{{ names }} </h2> 
+    <h2 class="namePokemon">{{ computedName }} </h2> 
 </template>
 <style>
 .namePokemon{

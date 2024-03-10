@@ -1,9 +1,9 @@
 <script setup>
-import MainContainer from '@/components/MainContainer.vue';
+
 </script>
 
 <template>
-  <MainContainer />
+    <router-view />
 </template>
 
 <style >

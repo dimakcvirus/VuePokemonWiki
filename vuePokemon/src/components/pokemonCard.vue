@@ -1,9 +1,9 @@
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import GenerateId from './GenerateId.vue'
 import TypePokemon from './TypePokemon.vue';
 import NameUpperCase from './NameUpperCase.vue';
-defineProps({
+const props  = defineProps({
     img:String,
     id:Number,
     name:String,
@@ -14,16 +14,18 @@ defineProps({
 
 <template>
     <div class="cardPok">
-        <a><img :src= img></a>
+        <router-link :to="`/pokemons/${props.id}`">
+            <img :src= img>
+        </router-link>
         <div class="informElements">
-            <GenerateId :id="id"/>
-            <NameUpperCase :name="name"/>
-            <TypePokemon :types="types"/>
+            <GenerateId :id="props.id"/>
+            <NameUpperCase :name="props.name"/>
+            <TypePokemon :types="props.types"/>
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .textIdPoc {
     color: #919191;
 }

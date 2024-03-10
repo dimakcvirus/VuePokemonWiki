@@ -1,14 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted} from 'vue';
+import { useStore } from 'vuex';
 import CardPokemons from './CardPokemons.vue';
 import Button from './Button.vue';
 
-const BASE_URL = "https://pokeapi.co/api/v2/";
+
+const BASE_URL = "https://pokeapi.co/api/v2/"; 
 const LIMIT_POKEMON = 12;
 let pokemonList = ref([]);
-let offsetPok = ref(0);
+let offsetPok = ref(0);   //ref() то функция, которая используется для создания реактивной ссылки на значение. позволяя сделать обычное значение реактивным.
 
-console.log(offsetPok) 
+
+
+const store = useStore() // useStore() 
 
 const getPokemons = async () => {
     let innerBase = []
@@ -31,7 +35,7 @@ const getPokemons = async () => {
     innerBase.sort((a, b) => {
         return a.id - b.id;
     });
-
+console.log(innerBase)
     return innerBase;
     
 }
@@ -42,10 +46,12 @@ const getPokemons = async () => {
 //     });
 // });
 
+//onMounted(), будет выполнена после того, как компонент будет успешно добавлен в DOM. Это может быть полезно, например,
+// для загрузки данных из внешних источников, установки слушателей событий или выполнения других операций, которые требуют доступа к DOM элементам.
 onMounted(async () => {
     const innerBase = await getPokemons();
-    console.log(innerBase)
     pokemonList.value.push(...innerBase)
+    store.dispatch('addToAllPokemons', innerBase)
 });
 
 const getPokemon = async (pokemonUrl) => {
@@ -55,7 +61,7 @@ const getPokemon = async (pokemonUrl) => {
 };
 
 
-const  Hendler = async () => {
+const  handleLoadMorePokemons = async () => {
     const number = 12;
     offsetPok.value += number;
     const innerBase = await getPokemons(offsetPok.value);
@@ -64,11 +70,11 @@ const  Hendler = async () => {
 </script>
 
 <template>
-
      <div class="mainContainer">
         <CardPokemons :pokemonList="pokemonList" v-if="pokemonList.length" />
-        <Button @click="Hendler()" />
+        <Button @click="handleLoadMorePokemons()" />
     </div>
+ 
 </template>
 
 <style>

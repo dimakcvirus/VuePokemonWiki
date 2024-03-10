@@ -1,12 +1,15 @@
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, computed } from 'vue';
 const props =defineProps(
     {
         id: Number,
       
     }
 )
-const ids = props.id
+
+const computedID = computed(() => {
+  return getId(props.id)
+})
 
 const getId = (id) => {
   const pokemonId = id;
@@ -26,12 +29,10 @@ const getId = (id) => {
   }
 
 };
-
-const formattedId = getId(ids);
 </script>
 
 <template>
-    <div class="textIdPok">{{ formattedId }}</div>
+    <div class="textIdPok">{{ computedID }}</div>
 </template>
 
 <style>

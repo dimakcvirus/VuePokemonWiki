@@ -9,7 +9,7 @@ const props = defineProps({
 
 <template >
     <div class="cardPokemons">
-        <PokemonCard v-for="pokemon in props.pokemonList"
+        <PokemonCard v-for="pokemon in props.pokemonList "
       :img="pokemon.sprites.other['official-artwork'].front_default"
       :id="pokemon.id"
       :name="pokemon.name"
