@@ -45,7 +45,7 @@ const getPokemon = async (id) => {
   return data;
 };
 
-async function gettinCategory(pokemonID) {
+const gettinCategory = async (pokemonID) => {
   let response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonID}`);
   let json = await response.json();
 
@@ -55,7 +55,7 @@ async function gettinCategory(pokemonID) {
       category.value = categoryValue[0].toLowerCase();
     }
   });
-}
+};
 
 const switchPokemons = async (switcher) => {
   let newID = pokemon.value.id;

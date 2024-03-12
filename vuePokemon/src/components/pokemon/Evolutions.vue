@@ -15,7 +15,7 @@ onMounted(() => {
   addevoGroup(props.id);
 });
 
-async function addevoGroup(id) {
+const addevoGroup = async (id) => {
   pokemonNames.value = [];
   mass.value = [];
   let idPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
@@ -23,7 +23,7 @@ async function addevoGroup(id) {
   const url = json.evolution_chain.url;
   console.log(url);
   setevoGroup(url);
-}
+};
 
 watch(ids, (newValue) => {
   emit('update:id', newValue);
@@ -37,16 +37,16 @@ watch(
 );
 
 //функция которая принимаю ссылку на группу покемонов эволюции
-async function setevoGroup(url) {
+const setevoGroup = async (url) => {
   let idPokemon = await fetch(url);
   let json = await idPokemon.json();
   console.log(json);
   gettingNamesPokemonGroup(json.chain);
   loadPokemonData(pokemonNames.value);
-}
+};
 
 //функция которя получает имена покемонов из группы эволюции
-function gettingNamesPokemonGroup(evol) {
+const gettingNamesPokemonGroup = (evol) => {
   let evolutionSpeciesName = evol.species.name;
   pokemonNames.value.push(evolutionSpeciesName);
   if (evol.evolves_to.length) {
@@ -54,10 +54,11 @@ function gettingNamesPokemonGroup(evol) {
       gettingNamesPokemonGroup(nextEvolution); //evol.evol.evolves_to[0]
     });
   }
-}
+};
 
 // фукнция которя принимает имя покемона и загружает о нем все данные
-async function loadPokemonData(urlPok) {
+
+const loadPokemonData = async (urlPok) => {
   Promise.allSettled(
     urlPok.map(async (parametrPokemon) => {
       let urlPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${parametrPokemon}/`);
@@ -71,7 +72,7 @@ async function loadPokemonData(urlPok) {
       mass.value.push({ name: namePokemon, id: idPokemon, img: img, pokemonTypes });
     }),
   );
-}
+};
 </script>
 
 <template>
