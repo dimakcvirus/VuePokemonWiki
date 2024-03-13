@@ -6,7 +6,13 @@ const props = defineProps({
 
 <template>
   <div v-if="props.types.length" class="typePok">
-    <span :class="'pokemonType ' + type" v-for="(type, index) in props.types">{{ type }}</span>
+    <span
+      v-for="(type, index) in props.types"
+      :key="index"
+      :class="'pokemonType ' + type"
+    >
+      {{ type }}
+    </span>
   </div>
 </template>
 

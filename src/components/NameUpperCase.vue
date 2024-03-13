@@ -14,6 +14,7 @@ const computedName = computed(() => {
 <template>
   <h2 class="namePokemon">{{ computedName }}</h2>
 </template>
+
 <style>
 .namePokemon {
   white-space: nowrap;

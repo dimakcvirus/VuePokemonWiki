@@ -32,4 +32,3 @@ const getId = (id) => {
   <div class="textIdPok">{{ computedID }}</div>
 </template>
 
-<style></style>
