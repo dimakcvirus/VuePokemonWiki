@@ -2,45 +2,41 @@
 import { onMounted, ref, watch } from 'vue';
 import GenerateId from '../GenerateId.vue';
 import TypePokemon from '../TypePokemon.vue';
+
 const props = defineProps({
-  id: String,
+  id: {
+    type: Number,
+    required: true,
+  },
 });
+
 const pokemonNames = ref([]);
-const mass = ref([]);
-const emit = defineEmits(['update:id']);
-//функция которая получает группу покемонов эволюции
-const ids = ref(props.id);
+const pokemonsGroups = ref([]);
 
 onMounted(() => {
   addevoGroup(props.id);
 });
 
+watch(props, (newValue) => {
+  addevoGroup(newValue.id);
+});
+
+//функция которая получает группу покемонов эволюции
 const addevoGroup = async (id) => {
   pokemonNames.value = [];
-  mass.value = [];
+  pokemonsGroups.value = [];
   let idPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
   let json = await idPokemon.json();
   const url = json.evolution_chain.url;
-  console.log(url);
+  // console.log(url);
   setevoGroup(url);
 };
-
-watch(ids, (newValue) => {
-  emit('update:id', newValue);
-});
-
-watch(
-  () => props.id,
-  (newValue) => {
-    addevoGroup(newValue);
-  },
-);
 
 //функция которая принимаю ссылку на группу покемонов эволюции
 const setevoGroup = async (url) => {
   let idPokemon = await fetch(url);
   let json = await idPokemon.json();
-  console.log(json);
+  // console.log(json);
   gettingNamesPokemonGroup(json.chain);
   loadPokemonData(pokemonNames.value);
 };
@@ -57,7 +53,6 @@ const gettingNamesPokemonGroup = (evol) => {
 };
 
 // фукнция которя принимает имя покемона и загружает о нем все данные
-
 const loadPokemonData = async (urlPok) => {
   Promise.allSettled(
     urlPok.map(async (parametrPokemon) => {
@@ -69,7 +64,8 @@ const loadPokemonData = async (urlPok) => {
       const pokemonTypes = data.types.map((item) => {
         return item.type.name;
       });
-      mass.value.push({ name: namePokemon, id: idPokemon, img: img, pokemonTypes });
+
+      pokemonsGroups.value.push({ name: namePokemon, id: idPokemon, img: img, pokemonTypes });
     }),
   );
 };
@@ -78,17 +74,20 @@ const loadPokemonData = async (urlPok) => {
 <template>
   <div class="containerEvolutions">
     <h2>Evolutions</h2>
+
     <div class="evolution-items">
-      <div v-for="item in mass" class="evolution-item">
+      <div v-for="item in pokemonsGroups" :key="item.id" class="evolution-item">
         <a>
           <img class="imgEvolution" :src="item.img" />
         </a>
+
         <h3 class="nameEvolution">
           {{ item.name }}
           <span class="idEvolution">
             <GenerateId :id="item.id" />
           </span>
         </h3>
+
         <TypePokemon :types="item.pokemonTypes" />
       </div>
     </div>

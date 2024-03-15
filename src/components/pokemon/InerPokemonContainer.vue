@@ -1,15 +1,15 @@
 <script setup>
-import { defineProps, ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ContainerNameID from '@/components/pokemon/ContainerNameID.vue';
 import ContainerPokemon from '@/components/pokemon/ContainerPokemon.vue';
 import Evolutions from './Evolutions.vue';
 
-let isFirst = ref(true);
 const route = useRoute();
-const route2 = useRouter();
+const router = useRouter();
 const id = computed(() => route.params.id);
+const newID = ref(Number(route.params.id));
 
 const pokemon = ref({});
 const store = useStore();
@@ -17,19 +17,19 @@ const category = ref(null);
 
 onMounted(async () => {
   if (store.getters.allPokemons.length) {
-    const pokemon2 = store.getters.allPokemons.find((item) => item.id === Number(id.value));
-    if (pokemon2) {
-      pokemon.value = pokemon2;
+    const pokemonFromStore = store.getters.allPokemons.find((item) => item.id === Number(id.value));
+    if (pokemonFromStore) {
+      pokemon.value = pokemonFromStore;
     }
   } else {
-    await getData();
+    await getData(id.value);
   }
 
   gettinCategory(pokemon.value.id);
 });
 
-const getData = async () => {
-  const pokemonData = await getPokemon(id.value);
+const getData = async (id) => {
+  const pokemonData = await getPokemon(id);
   const pokemonTypes = pokemonData.types.map((typeInfo) => typeInfo.type.name);
 
   // Обновление референса pokemon новыми данными, включая типы
@@ -58,42 +58,40 @@ const gettinCategory = async (pokemonID) => {
 };
 
 const switchPokemons = async (switcher) => {
-  let newID = pokemon.value.id;
   if (switcher === 'next') {
-    newID += 1;
+    newID.value += 1;
     console.log('+');
   }
-  if (switcher === 'back' && newID != 1) {
-    newID -= 1;
+  if (switcher === 'back' && newID.value != 1) {
+    newID.value -= 1;
     console.log('-');
   }
-  if (newID >= 1) {
-    route2.push({ path: `/pokemons/${newID}` }); // Обновляем маршрут с новым значением id
+  if (newID.value >= 1) {
     if (store.getters.allPokemons.length) {
-      const pokemon2 = store.getters.allPokemons.find((item) => item.id === Number(newID));
+      const pokemon2 = store.getters.allPokemons.find((item) => item.id === Number(newID.value));
       if (pokemon2) {
         pokemon.value = pokemon2;
       }
     } else {
-      await getData();
+      await getData(newID.value);
     }
-  }
-  if (newID == 1) {
-    isFirst.value = true;
-  } else {
-    isFirst.value = false;
+
+    router.push({ path: `/pokemons/${newID.value}` }); // Обновляем маршрут с новым значением id
   }
 };
 </script>
+
 <template>
   <div class="home">
     <router-link class="back" to="/">На Главную</router-link>
   </div>
+
   <div class="groupButton">
-    <button v-if="!isFirst" @click="switchPokemons('back')">Предыдущий</button>
+    <button v-if="Number(pokemon.id) > 1" @click="switchPokemons('back')">Предыдущий</button>
     <button @click="switchPokemons('next')">Следующий</button>
   </div>
-  <div class="test" v-if="pokemon && pokemon.sprites">
+
+  <iiv class="InerPokemonContainer" v-if="pokemon && pokemon.sprites">
     <ContainerNameID class="containerNameId" :name="pokemon.name" :id="pokemon.id" />
     <ContainerPokemon
       :img="pokemon.sprites.other['official-artwork'].front_default"
@@ -104,15 +102,9 @@ const switchPokemons = async (switcher) => {
       :types="pokemon.pokemonTypes"
       :stats="pokemon.stats"
     />
-    <Evolutions
-      @update:id="
-        (updatedId) => {
-          pokemon.id = updatedId;
-        }
-      "
-      :id="pokemon.id.toString()"
-    />
-  </div>
+
+    <Evolutions :id="newID" />
+  </iiv>
 </template>
 
 <style scoped>
@@ -141,7 +133,7 @@ const switchPokemons = async (switcher) => {
   font-size: 32px;
 }
 
-.test {
+.inerPokemonContainer {
   max-width: 1024px;
   display: flex;
   flex-direction: column;

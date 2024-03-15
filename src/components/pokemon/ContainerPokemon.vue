@@ -13,14 +13,17 @@ const props = defineProps({
   stats: Array,
 });
 </script>
+
 <template>
   <div class="containerPokemon">
     <div class="leftContent">
       <div class="imgContainer">
         <img class="imgPokemon" :src="props.img" />
       </div>
+
       <Stats :stats="props.stats" />
     </div>
+
     <RightContent
       :weight="props.weight"
       :height="props.height"
@@ -30,6 +33,7 @@ const props = defineProps({
     />
   </div>
 </template>
+
 <style scoped>
 .containerPokemon {
   display: flex;

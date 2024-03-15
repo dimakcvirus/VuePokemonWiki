@@ -11,16 +11,14 @@ let offsetPok = ref(0); //ref() то функция, которая исполь
 const store = useStore(); // useStore()
 
 onMounted(async () => {
-  const innerBase = await getPokemons();
-  pokemonList.value.push(...innerBase);
-  store.dispatch('addToAllPokemons', pokemonList);
+  if (store.getters.allPokemons.length) {
+    pokemonList.value = store.getters.allPokemons;
+  } else {
+    const innerBase = await getPokemons();
+    pokemonList.value.push(...innerBase);
+    store.dispatch('addToAllPokemons', pokemonList);
+  }
 });
-
-// onMounted(() => {
-//     getPokemons().then(res => {
-//         base.value = res;
-//     });
-// });
 
 //onMounted(), будет выполнена после того, как компонент будет успешно добавлен в DOM. Это может быть полезно, например,
 // для загрузки данных из внешних источников, установки слушателей событий или выполнения других операций, которые требуют доступа к DOM элементам.
@@ -45,7 +43,7 @@ const getPokemons = async () => {
   innerBase.sort((a, b) => {
     return a.id - b.id;
   });
-  console.log(innerBase);
+  // console.log(innerBase);
   return innerBase;
 };
 
@@ -60,13 +58,17 @@ const handleLoadMorePokemons = async () => {
   offsetPok.value += number;
   const innerBase = await getPokemons(offsetPok.value);
   pokemonList.value.push(...innerBase);
-  store.dispatch('addToAllPokemons', pokemonList);
+  store.dispatch('addToAllPokemons', pokemonList.value);
 };
 </script>
 
 <template>
   <div class="mainContainer">
-    <CardPokemons :pokemonList="pokemonList" v-if="pokemonList.length" />
+    <CardPokemons
+      v-if="pokemonList.length"
+      :pokemonList="pokemonList"
+    />
+
     <Button @click="handleLoadMorePokemons()" />
   </div>
 </template>

@@ -1,8 +1,6 @@
 <script setup>
 const maxStat = 200; // максимальное значение статов
 const countOfStatsPoint = 15; // максимальное значение шкалы значений
-const fillColor = '#30a7d7'; // цвет на который меняем ли
-const pokemonStats = {}; // обекты которые содержащие статы покемонов
 
 defineProps({
   stats: {
@@ -10,6 +8,7 @@ defineProps({
     default: () => [],
   },
 });
+
 const highlighter = (index, baseStat) => {
   const test = (baseStat / maxStat) * countOfStatsPoint;
   const test2 = countOfStatsPoint - test;
@@ -27,6 +26,7 @@ const highlighter = (index, baseStat) => {
         <ul class="stats-items">
           <li
             v-for="(numberLi, index) in new Array(countOfStatsPoint)"
+            :key="index"
             class="statsItem"
             :class="{ active: highlighter(index, item.base_stat) }"
           ></li>

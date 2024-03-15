@@ -2,7 +2,7 @@
 import { defineProps } from 'vue';
 import TypePokemon from '../TypePokemon.vue';
 
-const test = defineProps({
+const props = defineProps({
   weight: Number,
   height: Number,
   abilites: String,
@@ -42,7 +42,7 @@ const test = defineProps({
       </ul>
     </div>
     <div>
-      <TypePokemon :types="test.types" />
+      <TypePokemon :types="props.types" />
       <h3>Weaknesses</h3>
       <div class="weaknesses">
         <span class="fire pokemonType">Fire</span>
